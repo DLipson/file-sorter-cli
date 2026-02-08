@@ -19,7 +19,15 @@ async function applyAction(action: PlanAction): Promise<void> {
 
   const destination = await uniqueDestination(to);
   await fs.mkdir(path.dirname(destination), { recursive: true });
-  await moveFile(from, destination);
+  try {
+    await moveFile(from, destination);
+  } catch (err: unknown) {
+    if (isBusy(err)) {
+      console.warn(`skip locked: ${from}`);
+      return;
+    }
+    throw err;
+  }
 }
 
 async function moveFile(from: string, to: string): Promise<void> {
@@ -66,5 +74,14 @@ function isExdev(err: unknown): boolean {
     err !== null &&
     "code" in err &&
     (err as { code?: string }).code === "EXDEV"
+  );
+}
+
+function isBusy(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code?: string }).code === "EBUSY"
   );
 }
