@@ -110,7 +110,7 @@ const EXT_BUCKETS: Record<string, string> = {
   ".ini": "Code",
   ".cfg": "Code",
   ".yaml": "Data",
-  ".yml": "Data",
+  ".yml": "Data",`n  ".html": "Code",
   ".csv": "Data",
   ".json": "Data",
   ".jsonl": "Data",
@@ -177,3 +177,4 @@ function pickRule(filePath: string, relativePath: string, rules: Rule[]): Rule |
 function toPosix(value: string): string {
   return value.replace(/\\/g, "/");
 }
+
