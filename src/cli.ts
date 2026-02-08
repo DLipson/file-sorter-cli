@@ -23,14 +23,18 @@ program
   .option("--rules <path>", "path to rules.json")
   .option("--include-hidden", "include hidden files", false)
   .option("--ignore <glob>", "ignore glob pattern", collectValues, [] as string[])
+  .option("--max-depth <n>", "max folder depth to scan", "0")
   .action(async (options) => {
     const roots = options.root.length ? options.root.map(resolvePath) : getDefaultRoots();
     const destRoots = getDefaultDestRoots(roots);
     const rulesPath = resolveRulesPath(options.rules, getDefaultRulesPath());
     const rules = await loadRules(rulesPath);
+    const maxDepth = toNumber(options.maxDepth, 0);
+    const baseIgnores = ["node_modules/**", ".git/**", "**/_Sorted/**"];
     const scanOptions: ScanOptions = {
       includeHidden: Boolean(options.includeHidden),
-      ignore: options.ignore ?? []
+      ignore: baseIgnores.concat(options.ignore ?? []),
+      maxDepth
     };
     const plan = await buildPlan(roots, destRoots, rules, scanOptions);
     const outPath = options.out ? resolvePath(options.out) : defaultPlanPath(destRoots);
@@ -90,4 +94,12 @@ function bucketFromReason(reason: string): string {
     return parts[1];
   }
   return reason;
+}
+
+function toNumber(value: string, fallback: number): number {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed < 0) {
+    return fallback;
+  }
+  return parsed;
 }

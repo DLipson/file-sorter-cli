@@ -57,7 +57,7 @@ async function walkFiles(
   options: ScanOptions
 ): Promise<string[]> {
   const results: string[] = [];
-  const stack: string[] = [root];
+  const stack: Array<{ dir: string; depth: number }> = [{ dir: root, depth: 0 }];
   const normalizedDest = path.resolve(destRoot);
   const normalizedRoot = path.resolve(root);
 
@@ -66,7 +66,7 @@ async function walkFiles(
     if (!current) {
       continue;
     }
-    const resolved = path.resolve(current);
+    const resolved = path.resolve(current.dir);
     if (isInside(resolved, normalizedDest)) {
       continue;
     }
@@ -91,7 +91,9 @@ async function walkFiles(
         if (isIgnored(relative, options.ignore)) {
           continue;
         }
-        stack.push(entryPath);
+        if (current.depth < options.maxDepth) {
+          stack.push({ dir: entryPath, depth: current.depth + 1 });
+        }
         continue;
       }
       if (!entry.isFile()) {

@@ -29,4 +29,5 @@ export type RulesFile = {
 export type ScanOptions = {
   includeHidden: boolean;
   ignore: string[];
+  maxDepth: number;
 };
