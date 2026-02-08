@@ -31,7 +31,8 @@ describe("applyPlan", () => {
           size: 4,
           mtime: new Date().toISOString()
         }
-      ]
+      ],
+      otherTypeCounts: {}
     };
 
     await applyPlan(plan);

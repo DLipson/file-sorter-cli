@@ -11,6 +11,7 @@ export async function buildPlan(
   options: ScanOptions
 ): Promise<Plan> {
   const actions: PlanAction[] = [];
+  const otherTypeCounts: Record<string, number> = {};
   const createdAt = new Date().toISOString();
 
   for (const root of roots) {
@@ -22,6 +23,11 @@ export async function buildPlan(
     for (const filePath of files) {
       const relativePath = path.relative(root, filePath);
       const { target, reason } = classifyPath(filePath, relativePath, rules);
+      if (target === "Other") {
+        const ext = path.extname(filePath).toLowerCase();
+        const key = ext || "(no extension)";
+        otherTypeCounts[key] = (otherTypeCounts[key] ?? 0) + 1;
+      }
       const targetSegments = normalizeTargetSegments(target);
       const destination = path.join(destRoot, ...targetSegments, path.basename(filePath));
       const stats = await fs.stat(filePath);
@@ -40,7 +46,8 @@ export async function buildPlan(
     createdAt,
     roots,
     destRoots,
-    actions
+    actions,
+    otherTypeCounts
   };
 }
 

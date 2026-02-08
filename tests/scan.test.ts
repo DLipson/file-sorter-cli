@@ -13,6 +13,8 @@ describe("buildPlan", () => {
     await fs.mkdir(desktop, { recursive: true });
     const desktopFile = path.join(desktop, "note.txt");
     await fs.writeFile(desktopFile, "hello", "utf8");
+    const unknownFile = path.join(desktop, "mystery.abc");
+    await fs.writeFile(unknownFile, "mystery", "utf8");
 
     const roots = [downloads, desktop];
     const destRoots = {
@@ -21,8 +23,11 @@ describe("buildPlan", () => {
     };
 
     const plan = await buildPlan(roots, destRoots, [], { includeHidden: false, ignore: [] });
-    expect(plan.actions.length).toBe(1);
-    expect(plan.actions[0].to).toBe(path.join(desktop, "_Sorted", "Docs", "note.txt"));
+    expect(plan.actions.length).toBe(2);
+    const destinations = plan.actions.map((action) => action.to);
+    expect(destinations).toContain(path.join(desktop, "_Sorted", "Docs", "note.txt"));
+    expect(destinations).toContain(path.join(desktop, "_Sorted", "Other", "mystery.abc"));
+    expect(plan.otherTypeCounts[".abc"]).toBe(1);
   });
 
   it("skips _Sorted directories", async () => {

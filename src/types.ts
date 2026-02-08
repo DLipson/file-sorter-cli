@@ -12,6 +12,7 @@ export type Plan = {
   roots: string[];
   destRoots: Record<string, string>;
   actions: PlanAction[];
+  otherTypeCounts: Record<string, number>;
 };
 
 export type Rule = {

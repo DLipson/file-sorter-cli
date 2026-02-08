@@ -73,6 +73,15 @@ function printSummary(plan: Awaited<ReturnType<typeof buildPlan>>, outPath: stri
   for (const bucket of buckets) {
     console.log(`${bucket}: ${counts[bucket]}`);
   }
+
+  const otherEntries = Object.entries(plan.otherTypeCounts)
+    .sort((a, b) => b[1] - a[1]);
+  if (otherEntries.length) {
+    console.log("Other types:");
+    for (const [ext, count] of otherEntries) {
+      console.log(`${ext}: ${count}`);
+    }
+  }
 }
 
 function bucketFromReason(reason: string): string {

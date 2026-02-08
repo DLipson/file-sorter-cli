@@ -1,0 +1,5 @@
+node_modules/
+*.log
+Downloads/_Sorted/
+Desktop/_Sorted/
+plan-*.json
