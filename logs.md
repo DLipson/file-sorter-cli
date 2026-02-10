@@ -1,0 +1,5 @@
+- **2026-02-10 — Fix html mapping transform error**
+  - **Bug** — Running `scan` failed with a transform error in `classify.ts`.
+  - **Root Cause** — A malformed string sequence (`\`n`) was injected into the extension map, breaking TypeScript parsing.
+  - **Fix** — Corrected the extension map formatting and added a test for `.html` and `.yml` classification.
+  - **Verification** — `npm test` (vitest) passes.

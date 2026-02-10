@@ -20,4 +20,11 @@ describe("classifyPath", () => {
     expect(result.target).toBe("Other");
     expect(result.reason).toBe("fallback:Other");
   });
+
+  it("maps html to Code and yaml to Data", () => {
+    const html = classifyPath("C:/tmp/index.html", "index.html", []);
+    const yaml = classifyPath("C:/tmp/config.yml", "config.yml", []);
+    expect(html.target).toBe("Code");
+    expect(yaml.target).toBe("Data");
+  });
 });
