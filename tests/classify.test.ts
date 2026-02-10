@@ -27,4 +27,13 @@ describe("classifyPath", () => {
     expect(html.target).toBe("Code");
     expect(yaml.target).toBe("Data");
   });
+
+  it("maps gdoc/gsheet/gscript to expected buckets", () => {
+    const gdoc = classifyPath("C:/tmp/doc.gdoc", "doc.gdoc", []);
+    const gsheet = classifyPath("C:/tmp/sheet.gsheet", "sheet.gsheet", []);
+    const gscript = classifyPath("C:/tmp/script.gscript", "script.gscript", []);
+    expect(gdoc.target).toBe("Docs");
+    expect(gsheet.target).toBe("Docs");
+    expect(gscript.target).toBe("Code");
+  });
 });
